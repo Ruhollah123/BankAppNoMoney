@@ -1,8 +1,6 @@
-﻿using Entities.Accounts;
-using Entities.Base;
-using Entities.Security;
-using Entities.Transactions;
+﻿using Entities.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace EFCore;
 
@@ -17,22 +15,8 @@ public class BankContext : DbContext
         optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=BankDatabase;Trusted_Connection=True");
     }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AccountBase>().HasDiscriminator<string>("AccountType")
-            .HasValue<UddevallaAccount>(nameof(UddevallaAccount))
-            .HasValue<BankAccount>(nameof(BankAccount))
-            .HasValue<GoldAccount>(nameof(GoldAccount))
-            .HasValue<IskAccount>(nameof(IskAccount))
-            .HasValue<MillionAccount>(nameof(MillionAccount));
-
-        modelBuilder.Entity<SecurityBase>().HasDiscriminator<string>("SecurityType")
-            .HasValue<MutualFund>(nameof(MutualFund))
-            .HasValue<Stock>(nameof(Stock));
-
-        modelBuilder.Entity<SecurityTransactionBase>().HasDiscriminator<string>("SecurityTransactionType")
-            .HasValue<MutualFundTransaction>(nameof(MutualFundTransaction))
-            .HasValue<StockTransaction>(nameof(StockTransaction));
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BankContext).Assembly);
     }
 }
